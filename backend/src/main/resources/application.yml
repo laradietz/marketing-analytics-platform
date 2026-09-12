@@ -1,0 +1,86 @@
+spring:
+  application:
+    name: marketing-analytics-platform
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/marketing_analytics}
+    username: ${DB_USERNAME:marketing_user}
+    password: ${DB_PASSWORD:marketing_pass}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: false
+        jdbc:
+          time_zone: UTC
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: always
+    include-binding-errors: always
+
+app:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
+  frontend-url: ${FRONTEND_URL:http://localhost:5173}
+  security:
+    jwt:
+      secret: ${JWT_SECRET:change-this-development-only-secret-key-please-32chars-min}
+      expiration-minutes: ${JWT_EXPIRATION_MINUTES:1440}
+    encryption-key: ${APP_ENCRYPTION_KEY:change-this-development-only-encryption-key}
+  seed:
+    enabled: ${SEED_DEMO_DATA:true}
+    demo-user-email: ${DEMO_USER_EMAIL:demo@marketinganalytics.com}
+    demo-user-password: ${DEMO_USER_PASSWORD:Demo1234!}
+  integrations:
+    meta:
+      client-id: ${META_CLIENT_ID:}
+      client-secret: ${META_CLIENT_SECRET:}
+      redirect-uri: ${META_REDIRECT_URI:http://localhost:8080/api/integrations/callback}
+    google-ads:
+      client-id: ${GOOGLE_ADS_CLIENT_ID:}
+      client-secret: ${GOOGLE_ADS_CLIENT_SECRET:}
+      developer-token: ${GOOGLE_ADS_DEVELOPER_TOKEN:}
+      login-customer-id: ${GOOGLE_ADS_LOGIN_CUSTOMER_ID:}
+      redirect-uri: ${GOOGLE_ADS_REDIRECT_URI:http://localhost:8080/api/integrations/callback}
+    tiktok:
+      app-id: ${TIKTOK_APP_ID:}
+      app-secret: ${TIKTOK_APP_SECRET:}
+      redirect-uri: ${TIKTOK_REDIRECT_URI:http://localhost:8080/api/integrations/callback}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+logging:
+  level:
+    root: INFO
+    com.marketinganalytics.platform: ${LOG_LEVEL:INFO}
+    org.hibernate.SQL: ${SQL_LOG_LEVEL:WARN}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+  api-docs:
+    path: /v3/api-docs
